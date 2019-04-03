@@ -45,15 +45,25 @@ if (!cluster) {
 
 # ---- Create sub-directories ----
 
-projectwd <- paste(parentwd, project_name, sep="/")
-codewd <- paste(projectwd, "code", sep="/")
-datawd <- paste(projectwd, "data", sep="/")
-outputwd <- paste(projectwd, "output", output_version_date, sep="/")
-workspacewd <- paste(projectwd, "workspaces", workspace_version_date, sep="/")
+projectwd <- file.path(parentwd, project_name)
+codewd <- file.path(projectwd, "code")
+datawd <- file.path(projectwd, "data", sep="/")
 
-# top level output and workspace directories
-top_outputwd <- paste(projectwd, "output", sep="/")
-top_workspacewd <- paste(projectwd, "workspaces", sep="/")
+if (is.null(output_version_date)) {
+  top_outputwd <- NULL
+  outputwd <- file.path(projectwd, "output")
+} else {
+  top_outputwd <- file.path(projectwd, "output")
+  outputwd <- file.path(projectwd, "output", output_version_date)
+}
+
+if (is.null(output_version_date)) {
+  top_workspacewd <- NULL
+  workspacewd <- file.path(projectwd, "workspaces")
+} else {
+  top_workspacewd <- file.path(projectwd, "workspaces")
+  workspacewd <- file.path(projectwd, "workspaces", workspace_version_date)
+}
 
 # create sub-directories if they don't exist (invisible() suppresses [[i]] NULL output from lapply)
 dirs <- c(codewd, datawd, top_outputwd, top_workspacewd, outputwd, workspacewd)
