@@ -39,9 +39,7 @@ lapply(list.of.packages, library, character.only=TRUE)
 # =================================  SET DIRECTORY PATHS  ================================
 
 # ---- Parent working directory, depending on workstation (usually the Git folder) ----
-
-if (cluster) parentwd <- c("/users1/samf") # BTO cluster
-if (!cluster) parentwd <- dir("../") # one level up from project folder is Git folder
+parentwd <- dir("../") # one level up from project folder is Git folder
 
 # ---- Create sub-directories ----
 
