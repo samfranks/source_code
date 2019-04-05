@@ -1,8 +1,10 @@
 #######################################################################################
 #
 #
-#   SOURCE CODE: Header code to install and load packages, set directory paths, print session info
+#   SOURCE CODE:
 #   
+#   Header code to install and load packages, set directory paths, print session info
+#   when WITHIN a .Rproj
 #
 #######################################################################################
 
@@ -12,6 +14,7 @@
 
 set.seed(seed_number)
 
+# name of project folder
 project_name <- project_details$project_name
 
 # output and workspaces sub-directory (e.g. for original analysis, revisions, accepted versions, etc)
@@ -38,31 +41,28 @@ lapply(list.of.packages, library, character.only=TRUE)
 # ---- Parent working directory, depending on workstation (usually the Git folder) ----
 
 if (cluster) parentwd <- c("/users1/samf") # BTO cluster
-if (!cluster) {
-  if (!Mac) parentwd <- paste("C:/Users/samf/Documents/Git")
-  if (Mac) parentwd <- paste("/Volumes/m3_bitlocker_disk2s1_/BTO PC Documents/Git")
-}
+if (!cluster) parentwd <- dir("../") # one level up from project folder is Git folder
 
 # ---- Create sub-directories ----
 
-projectwd <- file.path(parentwd, project_name)
-codewd <- file.path(projectwd, "code")
-datawd <- file.path(projectwd, "data", sep="/")
+projectwd <- getwd() # the .Rproj working directory
+codewd <- "./code"
+datawd <- "./data"
 
 if (is.null(output_version_date)) {
   top_outputwd <- NULL
-  outputwd <- file.path(projectwd, "output")
+  outputwd <- "./output"
 } else {
-  top_outputwd <- file.path(projectwd, "output")
-  outputwd <- file.path(projectwd, "output", output_version_date)
+  top_outputwd <- "./output"
+  outputwd <- file.path("./output", output_version_date)
 }
 
 if (is.null(output_version_date)) {
   top_workspacewd <- NULL
-  workspacewd <- file.path(projectwd, "workspaces")
+  workspacewd <- "./workspaces"
 } else {
-  top_workspacewd <- file.path(projectwd, "workspaces")
-  workspacewd <- file.path(projectwd, "workspaces", workspace_version_date)
+  top_workspacewd <- "./workspaces"
+  workspacewd <- file.path("./workspaces", workspace_version_date)
 }
 
 # create sub-directories if they don't exist (invisible() suppresses [[i]] NULL output from lapply)
@@ -80,7 +80,7 @@ options(digits=6)
 # session info is captured in the most recent run of the code
 # if using version control, then can see what the session_info was on each day you ran some code
 
-session_info_file <- file.path(projectwd, "session_info.txt")
+session_info_file <- "session_info.txt"
 
 if (!file.exists(session_info_file)) {  # if file does not exist
   
