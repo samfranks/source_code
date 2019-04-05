@@ -81,20 +81,37 @@ options(digits=6)
 # if using version control, then can see what the session_info was on each day you ran some code
 
 session_info_file <- file.path(projectwd, "session_info.txt")
-if (!file.exists(session_info_file)) file.create(session_info_file)
 
-# get last modified timestamp
-file_date_last_modified <- file.info(session_info_file)$mtime %>% format(., "%d-%b-%Y")
-
-# today's date
-today_date <- format(Sys.Date(), "%d-%b-%Y")
-
-# update session_text only if the file was last modified previous to today's date
-if(!file_date_last_modified %in% today_date) {
+if (!file.exists(session_info_file)) {  # if file does not exist
+  
+  #create file
+  file.create(session_info_file)
+  
+  # today's date
+  today_date <- format(Sys.Date(), "%d-%b-%Y")
+  
+  # add session info text to file
   sink(session_info_file)
   cat("\n# =============== Session info ==================\n", sep="\n")
   cat("# ----  Date: ", today_date, " --------\n\n")
   print(sessionInfo())
   sink()
+  
+} else {  # if file does exist
+  
+  # get last modified timestamp
+  file_date_last_modified <- file.info(session_info_file)$mtime %>% format(., "%d-%b-%Y")
+  
+  # today's date
+  today_date <- format(Sys.Date(), "%d-%b-%Y")
+  
+  # update session_text only if the file was last modified previous to today's date
+  if(!file_date_last_modified %in% today_date) {
+    sink(session_info_file)
+    cat("\n# =============== Session info ==================\n", sep="\n")
+    cat("# ----  Date: ", today_date, " --------\n\n")
+    print(sessionInfo())
+    sink()
+  }
 }
 
